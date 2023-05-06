@@ -1,14 +1,17 @@
 public class IdleState implements StateOfVendingMachine {
-    public void idle(VendingMachine machine) {}
-
-    public void waitingForMoney(VendingMachine machine) {
-        System.out.println("IdleState -> WaitingForMoney");
-        machine.setState(new WaitingForMoneyState());
+    public void selectSnack(VendingMachine machine, String snackName) {
+        if(machine.machineContainsSnack(snackName)) {
+            System.out.println(String.format("%s costs $%.2f", snackName, machine.getSnackCost(snackName)));
+            machine.selectSnack(snackName);
+            machine.setState(new WaitingForMoneyState());
+        }
+        else
+            System.out.println("Snack is not valid");
     }
 
-    public void waitingForSelect(VendingMachine machine) {}
+    public void insertMoney(VendingMachine machine, double money) {}
 
-    public void dispensingSnack(VendingMachine machine) {}
+    public void dispenseSnack(VendingMachine machine) {}
 
-    public void endTransaction(VendingMachine machine) {}
+    public void cancelTransaction(VendingMachine machine) {}
 }

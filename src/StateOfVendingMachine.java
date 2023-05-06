@@ -1,8 +1,6 @@
 public interface StateOfVendingMachine {
-    void idle(VendingMachine machine);
-    void waitingForMoney(VendingMachine machine);
-    void waitingForSelect(VendingMachine machine);
-    void dispensingSnack(VendingMachine machine);
-    void endTransaction(VendingMachine machine);
-
+    void insertMoney(VendingMachine machine, double money);
+    void selectSnack(VendingMachine machine, String snackName);
+    void dispenseSnack(VendingMachine machine);
+    void cancelTransaction(VendingMachine machine);
 }
