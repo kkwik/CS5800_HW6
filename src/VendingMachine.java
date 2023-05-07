@@ -73,9 +73,9 @@ public class VendingMachine implements StateMachine {
 
 
     public void printInventory() {
-        System.out.println("Inventory: ");
+        System.out.print(String.format("Machine contains: "));
         for(Snack snack : inventory.values()) {
-        System.out.println(String.format("%s: %d", snack.getName(), snack.getQuantity()));
+        System.out.print(String.format("%s: %d,", snack.getName(), snack.getQuantity()));
         }
         System.out.println();
     }
@@ -85,6 +85,17 @@ public class VendingMachine implements StateMachine {
 
     public Snack getSelectedSnack() {
         return this.selectedSnack;
+    }
+
+    public void setSelectedSnack(String snackName) {
+        selectedSnack = inventory.get(snackName);
+    }
+
+    public boolean canSelectSnack(String snackName) {
+        if(SnackFactory.validSnackName(snackName) && inventory.containsKey(snackName)) {
+            return true;
+        }
+        return false;
     }
 
     // Cost related
@@ -104,7 +115,7 @@ public class VendingMachine implements StateMachine {
         this.currentPaymentAmount -= amount;
     }
 
-    private double getFundsAmount() {
+    public double getFundsAmount() {
         return this.currentPaymentAmount;
     }
 
@@ -127,7 +138,6 @@ public class VendingMachine implements StateMachine {
 
     public void purchaseSelectedSnack() {
         removeFunds(selectedSnack.getPrice());
-        removeStock(selectedSnack.getName(), 1);
     }
 
     // User actions

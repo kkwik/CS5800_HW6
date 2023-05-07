@@ -2,32 +2,35 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
-        selectSnackWithoutPaying();
-        insertMoneyWithoutSelectingSnack();
-        selectSnackAndPayWithoutDispensing();
-        attemptPaymentWithInsufficientFunds();
-        addFundsThenSwitchSelection();
-        cancelAfterPaying();
-        buyTwoOfASnack();
-        ranOutOfSnack();
+        testInsertMoneyWithoutSelectingSnack();
+        testSelectSnack();
+        testSelectSnackAndPayWithoutDispensing();
+        testDispenseSnack();
+        testSelectingInvalidSnack();
+        testSelectingAnOutOfStockSnack();
+        testRanOutOfSnack();
+        testCancelOutOfSelection();
+        testCancelOutOfPayment();
     }
 
-    public static void selectSnackWithoutPaying() {
-        System.out.println("Testing selecting snack without paying");
-        VendingMachine machine = new VendingMachine();
-        machine.addStock("Coke", 1);
-        machine.selectSnack("Coke");
-        System.out.println();
-    }
-
-    public static void insertMoneyWithoutSelectingSnack() {
+    public static void testInsertMoneyWithoutSelectingSnack() {
         System.out.println("Testing paying without selecting a snack");
         VendingMachine machine = new VendingMachine();
         machine.insertMoney(100.0);
         System.out.println();
     }
 
-    public static void selectSnackAndPayWithoutDispensing() {
+    public static void testSelectSnack() {
+        System.out.println("Testing selecting a snack");
+        VendingMachine machine = new VendingMachine();
+        machine.addStock("Coke", 1);
+
+        machine.selectSnack("Coke");
+
+        System.out.println();
+    }
+
+    public static void testSelectSnackAndPayWithoutDispensing() {
         System.out.println("Testing selecting a snack and paying but not dispensing");
         VendingMachine machine = new VendingMachine();
         machine.addStock("Coke", 1);
@@ -38,68 +41,83 @@ public class Main {
         System.out.println();
     }
 
-    public static void attemptPaymentWithInsufficientFunds() {
-        System.out.println("Testing attempting payment with insufficient funds");
+    public static void testDispenseSnack() {
+        System.out.println("Testing dispensing a snack");
         VendingMachine machine = new VendingMachine();
         machine.addStock("Coke", 1);
 
-        machine.selectSnack("Coke");
-        machine.insertMoney(1.0);
+        machine.printInventory();
 
-        machine.dispenseSnackIfPossible();
+        machine.selectSnack("Coke");
+        machine.insertMoney(10.0);
+
+        machine.dispenseSnack();
+
+        machine.printInventory();
 
         System.out.println();
     }
 
-    public static void addFundsThenSwitchSelection() {
-        System.out.println("Testing selecting a snack, paying a bit, then switching to another snack");
+    public static void testSelectingInvalidSnack() {
+        System.out.println("Testing selecting an invalid snack");
         VendingMachine machine = new VendingMachine();
         machine.addStock("Coke", 1);
-        machine.addStock("KitKat", 1);
 
-        machine.selectSnack("Coke");
-        machine.insertMoney(1.0);
-
-        machine.selectSnack("KitKat");
-        machine.dispenseSnackIfPossible();
+        machine.selectSnack("Twizzlers");
 
         System.out.println();
     }
 
-    public static void cancelAfterPaying() {
+    public static void testSelectingAnOutOfStockSnack() {
+        System.out.println("Testing selecting an out of stock snack");
+        VendingMachine machine = new VendingMachine();
+        machine.addStock("Coke", 0);
+
+        machine.selectSnack("Coke");
+
+        System.out.println();
+    }
+
+    public static void testRanOutOfSnack() {
+        System.out.println("Testing running out of stock of a snack");
+        VendingMachine machine = new VendingMachine();
+        machine.addStock("Coke", 1);
+
+        machine.selectSnack("Coke");
+        machine.insertMoney(10.0);
+        machine.dispenseSnack();
+
+        machine.selectSnack("Coke");
+        machine.insertMoney(10.0);
+        machine.dispenseSnack();
+
+        System.out.println();
+    }
+
+    public static void testCancelOutOfSelection() {
         System.out.println("Testing cancelling after paying");
         VendingMachine machine = new VendingMachine();
         machine.addStock("Coke", 1);
+
         machine.selectSnack("Coke");
-        machine.insertMoney(5.0);
         machine.cancelTransaction();
 
         System.out.println();
     }
 
-    public static void buyTwoOfASnack() {
-        System.out.println("Testing buying two of a snack");
+    public static void testCancelOutOfPayment() {
+        System.out.println("Testing cancelling after paying");
         VendingMachine machine = new VendingMachine();
-        machine.addStock("KitKat", 2);
-        machine.selectSnack("KitKat");
-        machine.insertMoney(5.0);
+        machine.addStock("Coke", 1);
 
-        machine.dispenseSnackIfPossible();
-        machine.dispenseSnackIfPossible();
+        machine.selectSnack("Coke");
+        machine.insertMoney(100.0);
+
+        machine.cancelTransaction();
 
         System.out.println();
     }
 
-    public static void ranOutOfSnack() {
-        System.out.println("Testing running out of stock");
-        VendingMachine machine = new VendingMachine();
-        machine.addStock("KitKat", 1);
-        machine.selectSnack("KitKat");
-        machine.insertMoney(5.0);
 
-        machine.dispenseSnackIfPossible();
-        machine.dispenseSnackIfPossible();
 
-        System.out.println();
-    }
 }
