@@ -4,7 +4,7 @@ public class DispensingSnackState implements StateOfVendingMachine {
     public void insertMoney(VendingMachine machine, double money) {}
 
     public void dispenseSnack(VendingMachine machine) {
-        SnackDispenseHandler handler = new CokeHandler(new PepsiHandler(new CheetoHandler(new DoritosHandler(new KitKatHandler(new SnickersHandler(null))))));
+        SnackDispenseHandler handler = SnackDispenseHandler.getSnackHandler();
 
         machine.purchaseSelectedSnack();
         handler.handleRequest(machine);
