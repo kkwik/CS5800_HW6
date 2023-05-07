@@ -13,7 +13,6 @@ public class VendingMachine implements StateMachine {
         this.inventory = new HashMap<>();
     }
 
-    // State related
     public StateOfVendingMachine getState() {
         return this.state;
     }
@@ -22,7 +21,6 @@ public class VendingMachine implements StateMachine {
         this.state = state;
     }
 
-    // Inventory related
     public void addStock(String snackName, int count) {
         if(!SnackFactory.validSnackName(snackName)) {
             System.out.println(String.format("%s is not a valid snack name", snackName));
@@ -41,6 +39,41 @@ public class VendingMachine implements StateMachine {
             addStock(snackName, -count);
     }
 
+    public void updateInventory(String name, int newTotal) {
+        Snack temp = inventory.get(name);
+
+        temp.setQuantity(newTotal);
+
+        inventory.put(name, temp);
+    }
+
+    
+    public void selectSnack(String snackName) {
+        state.selectSnack(this, snackName);
+    }
+
+    public double getSnackCost(String snackName) {
+        if(machineContainsSnack(snackName))
+            return inventory.get(snackName).getPrice();
+
+        return -1.0;
+    }
+
+    public Snack getSelectedSnack() {
+        return this.selectedSnack;
+    }
+
+    public void setSelectedSnack(String snackName) {
+        selectedSnack = inventory.get(snackName);
+    }
+
+    public boolean machineContainsSnack(String snackName) {
+        if(getStockOfSnack(snackName) <= 0)
+            return false;
+
+        return true;
+    }
+
     public int getStockOfSnack(String snackName) {
         if(!SnackFactory.validSnackName(snackName))
             return 0;
@@ -51,83 +84,48 @@ public class VendingMachine implements StateMachine {
         return inventory.get(snackName).getQuantity();
     }
 
-    public boolean machineContainsSnack(String snackName) {
-        if(getStockOfSnack(snackName) <= 0)
-            return false;
 
-        return true;
-    }
-
-    public boolean containsSelectedSnack() {
-        return machineContainsSnack(selectedSnack.getName());
-    }
-
-    public void updateInventory(String name, int newTotal) {
-        Snack temp = inventory.get(name);
-
-        temp.setQuantity(newTotal);
-
-        inventory.put(name, temp);
-    }
-
-
-
-    public void printInventory() {
-        System.out.print(String.format("Machine contains: "));
-        for(Snack snack : inventory.values()) {
-        System.out.print(String.format("%s: %d,", snack.getName(), snack.getQuantity()));
-        }
-        System.out.println();
-    }
-
-
-
-
-    public Snack getSelectedSnack() {
-        return this.selectedSnack;
-    }
-
-    public void setSelectedSnack(String snackName) {
-        selectedSnack = inventory.get(snackName);
-    }
-
-    public boolean canSelectSnack(String snackName) {
-        if(SnackFactory.validSnackName(snackName) && inventory.containsKey(snackName)) {
-            return true;
-        }
-        return false;
-    }
-
-    // Cost related
-    public void updateSnackCost(String name, double cost) {
-        Snack temp = inventory.get(name);
-
-        temp.setPrice(cost);
-
-        inventory.put(name, temp);
+    public void insertMoney(double money) {
+        state.insertMoney(this, money);
     }
 
     public void addFunds(double amount) {
         this.currentPaymentAmount += amount;
     }
 
-    public void removeFunds(double amount) {
-        this.currentPaymentAmount -= amount;
+    public boolean canAffordSelectedSnack() {
+        return this.currentPaymentAmount > selectedSnack.getPrice();
     }
 
     public double getFundsAmount() {
         return this.currentPaymentAmount;
     }
 
-    public double getSnackCost(String snackName) {
-        if(machineContainsSnack(snackName))
-            return inventory.get(snackName).getPrice();
-
-        return -1.0;
+    public boolean containsSelectedSnack() {
+        return machineContainsSnack(selectedSnack.getName());
     }
 
-    public boolean canAffordSelectedSnack() {
-        return this.currentPaymentAmount > selectedSnack.getPrice();
+
+    public void dispenseSnack() {
+        state.dispenseSnack(this);
+    }
+
+    public void purchaseSelectedSnack() {
+        removeFunds(selectedSnack.getPrice());
+    }
+
+    public void removeFunds(double amount) {
+        this.currentPaymentAmount -= amount;
+    }
+
+
+    public void cancelTransaction() {
+        state.cancelTransaction(this);
+    }
+
+    public void resetMachine() {
+        returnChange();
+        this.selectedSnack = null;
     }
 
     public void returnChange() {
@@ -136,42 +134,27 @@ public class VendingMachine implements StateMachine {
         this.currentPaymentAmount = 0.0;
     }
 
-    public void purchaseSelectedSnack() {
-        removeFunds(selectedSnack.getPrice());
+
+    public void updateSnackCost(String name, double cost) {
+        Snack temp = inventory.get(name);
+
+        temp.setPrice(cost);
+
+        inventory.put(name, temp);
     }
 
-    // User actions
-    public void insertMoney(double money) {
-        state.insertMoney(this, money);
+    public void printInventory() {
+        System.out.print(String.format("Machine contains: "));
+        for(Snack snack : inventory.values()) {
+            System.out.print(String.format("%s: %d,", snack.getName(), snack.getQuantity()));
+        }
+        System.out.println();
     }
 
-    public void selectSnack(String snackName) {
-        state.selectSnack(this, snackName);
+    public boolean canSelectSnack(String snackName) {
+        if(SnackFactory.validSnackName(snackName) && inventory.containsKey(snackName)) {
+            return true;
+        }
+        return false;
     }
-
-    public void dispenseSnack() {
-        state.dispenseSnack(this);
-    }
-
-    public void cancelTransaction() {
-        state.cancelTransaction(this);
-    }
-
-
-    public void resetMachine() {
-        returnChange();
-        this.selectedSnack = null;
-    }
-
-
-
-
-
-
-    public void printBalance() {
-        System.out.println(String.format("Current balance is $%.2f", this.currentPaymentAmount));
-    }
-
-
-
 }
