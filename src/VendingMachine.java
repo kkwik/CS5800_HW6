@@ -47,7 +47,7 @@ public class VendingMachine implements StateMachine {
         inventory.put(name, temp);
     }
 
-    
+
     public void selectSnack(String snackName) {
         state.selectSnack(this, snackName);
     }

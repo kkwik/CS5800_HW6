@@ -11,6 +11,7 @@ public class Main {
         testRanOutOfSnack();
         testCancelOutOfSelection();
         testCancelOutOfPayment();
+        testRunningOutOfSnickers();
     }
 
     public static void testInsertMoneyWithoutSelectingSnack() {
@@ -118,6 +119,28 @@ public class Main {
         System.out.println();
     }
 
+    public static void testRunningOutOfSnickers() {
+        System.out.println("Testing running out of snickers");
+        VendingMachine machine = new VendingMachine();
+        machine.addStock("Coke", 1);
+        machine.addStock("Pepsi", 5);
+        machine.addStock("KitKat", 3);
+        machine.addStock("Snickers", 2);
 
+        machine.selectSnack("Coke");
+        machine.insertMoney(100.0);
+        machine.dispenseSnack();
 
+        machine.selectSnack("Snickers");
+        machine.insertMoney(100.0);
+        machine.dispenseSnack();
+
+        machine.selectSnack("Snickers");
+        machine.insertMoney(100.0);
+        machine.dispenseSnack();
+
+        machine.selectSnack("Snickers");
+
+        System.out.println();
+    }
 }

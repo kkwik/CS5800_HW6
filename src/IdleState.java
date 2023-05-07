@@ -1,7 +1,7 @@
 public class IdleState implements StateOfVendingMachine {
     public void selectSnack(VendingMachine machine, String snackName) {
         if(machine.machineContainsSnack(snackName)) {
-            System.out.println(String.format("%s costs $%.2f", snackName, machine.getSnackCost(snackName)));
+            System.out.println(String.format("Selected %s which costs $%.2f", snackName, machine.getSnackCost(snackName)));
 
             machine.setSelectedSnack(snackName);
             machine.setState(new WaitingForMoneyState());
